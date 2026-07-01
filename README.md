@@ -40,11 +40,11 @@ src/
 
 ## AI
 
-The AI first checks for immediate wins, then blocks immediate human wins. If neither exists, it uses minimax with alpha-beta pruning and board-size-aware depth limits. This keeps 3x3 play strong while avoiding expensive full-tree searches for 4x4 and 5x5 boards.
+The AI first checks for immediate wins, then blocks immediate human wins. If neither exists, it uses minimax with alpha-beta pruning and board-size-aware depth limits. This keeps 3x3 play strong while avoiding expensive full-tree searches for 5x5 and 7x7 boards.
 
 ## Scalability
 
-The board is represented as a flat immutable array with coordinate helpers. Winner detection accepts a board size and win length, so 3x3, 4x4, and 5x5 rules use the same logic. Defaults are centralized in `src/game/constants/game.ts`.
+The board is represented as a flat immutable array with coordinate helpers. Winner detection accepts a board size and win length, so 3x3, 5x5, and 7x7 presets use the same logic. Defaults are centralized in `src/game/constants/game.ts` and can be switched from the page.
 
 ## Animation Decisions
 

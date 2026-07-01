@@ -14,6 +14,7 @@ import type { Position } from "../models/Position";
 
 type Action =
   | { type: "start"; config?: BoardConfig }
+  | { type: "changeConfig"; config: BoardConfig }
   | { type: "playerMove"; position: Position }
   | { type: "animationDone" }
   | { type: "computerMove"; position: Position | null }
@@ -41,6 +42,16 @@ function reducer(state: GameState, action: Action): GameState {
         resetVersion: state.resetVersion + 1,
       };
     }
+
+    case "changeConfig":
+      return {
+        board: createBoard(action.config.size),
+        config: action.config,
+        phase: "PlayerTurn",
+        result: null,
+        pendingPhase: null,
+        resetVersion: state.resetVersion + 1,
+      };
 
     case "playerMove": {
       if (state.phase !== "PlayerTurn") {
@@ -165,6 +176,10 @@ export function useGame() {
     dispatch({ type: "reset" });
   }, []);
 
+  const changeBoardConfig = useCallback((config: BoardConfig) => {
+    dispatch({ type: "changeConfig", config });
+  }, []);
+
   const statusText = useMemo(
     () => getStatusText(state.result, state.phase === "ComputerThinking"),
     [state.phase, state.result],
@@ -176,5 +191,6 @@ export function useGame() {
     isInputDisabled: state.phase !== "PlayerTurn",
     playMove,
     resetGame,
+    changeBoardConfig,
   };
 }

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { CELL_SIZE } from "../constants/game";
 import { hasPosition } from "../logic/winner";
 import { Cell } from "./Cell";
 import { WinningLine, type BoardMetrics } from "./WinningLine";
@@ -25,6 +26,7 @@ export function Board({
 }: BoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const [metrics, setMetrics] = useState<BoardMetrics | null>(null);
+  const boardWidth = size * CELL_SIZE + (size - 1) * 12;
 
   useLayoutEffect(() => {
     const boardElement = boardRef.current;
@@ -63,7 +65,10 @@ export function Board({
       className="board"
       role="grid"
       aria-label="Tic tac toe board"
-      style={{ gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))` }}
+      style={{
+        gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+        width: `min(100%, ${boardWidth}px)`,
+      }}
       initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.32, ease: "easeOut" }}

@@ -51,7 +51,7 @@ button {
 }
 
 .game-surface {
-  width: min(100%, 520px);
+  width: min(100%, max(520px, var(--board-layout-width, 520px)));
   display: grid;
   justify-items: center;
   gap: 22px;
@@ -66,7 +66,7 @@ button {
 
 .eyebrow,
 .status,
-.difficulty {
+.board-preset-selector {
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
@@ -94,21 +94,43 @@ h1 {
 }
 
 .toolbar {
-  width: min(100%, calc(var(--cell-size) * 3 + 24px));
+  width: min(100%, var(--board-layout-width, 520px));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-.difficulty {
+.board-preset-selector {
   min-height: 40px;
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 0 12px;
+  padding: 4px;
   background: rgba(255, 255, 255, 0.68);
+}
+
+.preset-button {
+  min-height: 32px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 10px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.preset-button[aria-pressed="true"] {
+  color: #ffffff;
+  background: var(--primary);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+}
+
+.preset-button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.3);
+  outline-offset: 2px;
 }
 
 .reset-button {
@@ -132,7 +154,6 @@ h1 {
   position: relative;
   display: grid;
   gap: 12px;
-  width: min(100%, calc(var(--cell-size) * 3 + 24px));
   aspect-ratio: 1;
 }
 
@@ -254,10 +275,14 @@ h1 {
     flex-direction: column;
   }
 
-  .difficulty,
+  .board-preset-selector,
   .reset-button {
     width: 100%;
     justify-content: center;
+  }
+
+  .preset-button {
+    flex: 1;
   }
 }
 
