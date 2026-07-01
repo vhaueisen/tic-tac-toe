@@ -39,4 +39,23 @@ describe("Board", () => {
 
     expect(onPlay).toHaveBeenCalledWith({ row: 0, column: 0 });
   });
+
+  it("draws a line through winning cells", () => {
+    const { container } = render(
+      <Board
+        board={createBoard(3)}
+        size={3}
+        winningPositions={[
+          { row: 0, column: 0 },
+          { row: 0, column: 1 },
+          { row: 0, column: 2 },
+        ]}
+        disabled={false}
+        resetVersion={0}
+        onPlay={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector(".winning-line line")).toBeInTheDocument();
+  });
 });

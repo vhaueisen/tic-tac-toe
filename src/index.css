@@ -129,6 +129,7 @@ h1 {
 }
 
 .board {
+  position: relative;
   display: grid;
   gap: 12px;
   width: min(100%, calc(var(--cell-size) * 3 + 24px));
@@ -148,6 +149,22 @@ h1 {
   box-shadow: var(--shadow);
   overflow: hidden;
   touch-action: manipulation;
+  z-index: 1;
+}
+
+.winning-line {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.winning-line line {
+  stroke: var(--win);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 2px 8px rgba(22, 163, 74, 0.35));
 }
 
 .cell:disabled {

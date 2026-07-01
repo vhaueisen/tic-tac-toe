@@ -1,6 +1,8 @@
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { hasPosition } from "../logic/winner";
 import { Cell } from "./Cell";
+import { WinningLine, type BoardMetrics } from "./WinningLine";
 import type { Board as BoardModel } from "../models/Board";
 import type { Position } from "../models/Position";
 
@@ -21,8 +23,42 @@ export function Board({
   resetVersion,
   onPlay,
 }: BoardProps) {
+  const boardRef = useRef<HTMLDivElement>(null);
+  const [metrics, setMetrics] = useState<BoardMetrics | null>(null);
+
+  useLayoutEffect(() => {
+    const boardElement = boardRef.current;
+
+    if (boardElement === null) {
+      return;
+    }
+
+    const updateMetrics = () => {
+      const styles = window.getComputedStyle(boardElement);
+      const gap = Number.parseFloat(styles.columnGap) || 0;
+
+      setMetrics({
+        width: boardElement.clientWidth,
+        height: boardElement.clientHeight,
+        gap,
+      });
+    };
+
+    updateMetrics();
+
+    if (!("ResizeObserver" in window)) {
+      return;
+    }
+
+    const observer = new ResizeObserver(updateMetrics);
+    observer.observe(boardElement);
+
+    return () => observer.disconnect();
+  }, [size]);
+
   return (
     <motion.div
+      ref={boardRef}
       key={resetVersion}
       className="board"
       role="grid"
@@ -50,6 +86,7 @@ export function Board({
           />
         );
       })}
+      <WinningLine positions={winningPositions} size={size} metrics={metrics} />
     </motion.div>
   );
 }
