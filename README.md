@@ -15,6 +15,17 @@ npm run dev
 npm test
 ```
 
+## Deploy to GitHub Pages
+
+This app deploys for free with GitHub Pages using the workflow in `.github/workflows/deploy.yml`.
+
+1. Push this repository to GitHub.
+2. In the GitHub repository, open **Settings > Pages**.
+3. Set **Build and deployment** to **GitHub Actions**.
+4. Push to the `main` branch, or run the **Deploy to GitHub Pages** workflow manually from the **Actions** tab.
+
+The workflow builds the app with the correct Vite base path for the repository name and publishes the `dist` folder.
+
 ## Useful Scripts
 
 ```bash
