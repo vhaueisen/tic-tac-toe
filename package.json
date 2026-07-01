@@ -1,5 +1,5 @@
 {
-  "name": "vite-scaffold",
+  "name": "vitor-tic-tac-toe",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,6 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "preview": "vite preview"
   },
   "dependencies": {

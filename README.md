@@ -1,75 +1,55 @@
-# React + TypeScript + Vite
+# Tic Tac Toe Interview App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium-feeling single-player Tic Tac Toe game built with React, TypeScript, Vite, Vitest, React Testing Library, and Framer Motion.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tests
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm test
 ```
+
+## Useful Scripts
+
+```bash
+npm run lint
+npm run format
+npm run build
+```
+
+## Architecture
+
+The game is split into a pure domain layer and a render layer. React components mostly render state and delegate actions. Game rules, AI, winner detection, and board manipulation live outside React so they are easy to test and scale.
+
+```text
+src/
+  app/App.tsx
+  game/
+    components/
+    hooks/useGame.ts
+    logic/
+    models/
+    constants/game.ts
+```
+
+## AI
+
+The AI first checks for immediate wins, then blocks immediate human wins. If neither exists, it uses minimax with alpha-beta pruning and board-size-aware depth limits. This keeps 3x3 play strong while avoiding expensive full-tree searches for 4x4 and 5x5 boards.
+
+## Scalability
+
+The board is represented as a flat immutable array with coordinate helpers. Winner detection accepts a board size and win length, so 3x3, 4x4, and 5x5 rules use the same logic. Defaults are centralized in `src/game/constants/game.ts`.
+
+## Animation Decisions
+
+Framer Motion handles board entry, cell hover/press states, X/O drawing, result banner entry, and local winning particles. CSS handles the winning glow pulse and the reduced-motion fallback.
+
+## AI Prompts Used
+
+The implementation was planned from `game-spec.md`, with explicit focus on clean architecture, configurable NxN rules, pure functions, polished motion, accessibility, and interview-ready developer experience.
