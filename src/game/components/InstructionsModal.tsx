@@ -82,8 +82,8 @@ export function InstructionsModal({ isOpen, onClose }: InstructionsModalProps) {
                 <h3>Bot difficulty</h3>
                 <p>
                   Easy plays center-first and misses some blocks. Medium blocks
-                  immediate threats. Hard uses the deepest search for the
-                  selected board.
+                  immediate threats, but does not plan forks. Hard uses the
+                  deepest search for the selected board.
                 </p>
               </section>
 

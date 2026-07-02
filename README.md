@@ -51,7 +51,7 @@ src/
 
 ## AI
 
-The AI supports Easy, Medium, and Hard modes. Easy stays intentionally beatable by taking immediate wins but skipping some defensive blocks. Medium blocks immediate human wins and uses shallow minimax. Hard uses the deepest board-size-aware minimax search with alpha-beta pruning. This keeps 3x3 play strong while avoiding expensive full-tree searches for 5x5 and 7x7 boards.
+The AI supports Easy, Medium, and Hard modes. Easy stays intentionally beatable by taking immediate wins but skipping some defensive blocks. Medium takes immediate wins, blocks one-move losses, and plays positionally without fork planning. Hard uses the deepest board-size-aware minimax search with alpha-beta pruning. This keeps 3x3 play strong while avoiding expensive full-tree searches for 5x5 and 7x7 boards.
 
 ## Scalability
 

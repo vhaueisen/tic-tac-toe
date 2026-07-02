@@ -26,4 +26,17 @@ describe("chooseAiMove difficulty", () => {
       column: 2,
     });
   });
+
+  it("keeps medium mode beatable by missing fork setup", () => {
+    const config = { size: 3, winLength: 3 };
+    let board = createBoard(config.size);
+    board = placeMove(board, { row: 0, column: 0 }, "X", config.size);
+    board = placeMove(board, { row: 1, column: 1 }, "O", config.size);
+    board = placeMove(board, { row: 2, column: 2 }, "X", config.size);
+
+    expect(chooseAiMove(board, config, "O", "X", "medium")).toEqual({
+      row: 0,
+      column: 1,
+    });
+  });
 });

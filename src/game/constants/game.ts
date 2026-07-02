@@ -17,14 +17,9 @@ export const DEFAULT_BOARD_CONFIG = BOARD_PRESETS[0];
 export const DEFAULT_BOT_DIFFICULTY: BotDifficulty = "hard";
 
 export const AI_DEPTH_BY_DIFFICULTY: Record<
-  Exclude<BotDifficulty, "easy">,
+  Extract<BotDifficulty, "hard">,
   Record<number, number>
 > = {
-  medium: {
-    3: 2,
-    5: 1,
-    7: 1,
-  },
   hard: {
     3: 8,
     5: 3,
