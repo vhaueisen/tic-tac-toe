@@ -26,7 +26,7 @@ export function Board({
 }: BoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
   const [metrics, setMetrics] = useState<BoardMetrics | null>(null);
-  const boardWidth = size * CELL_SIZE + (size - 1) * 12;
+  const boardWidth = size * CELL_SIZE + (size - 1) * 12 + 24;
 
   useLayoutEffect(() => {
     const boardElement = boardRef.current;
@@ -38,10 +38,16 @@ export function Board({
     const updateMetrics = () => {
       const styles = window.getComputedStyle(boardElement);
       const gap = Number.parseFloat(styles.columnGap) || 0;
+      const paddingX =
+        (Number.parseFloat(styles.paddingLeft) || 0) +
+        (Number.parseFloat(styles.paddingRight) || 0);
+      const paddingY =
+        (Number.parseFloat(styles.paddingTop) || 0) +
+        (Number.parseFloat(styles.paddingBottom) || 0);
 
       setMetrics({
-        width: boardElement.clientWidth,
-        height: boardElement.clientHeight,
+        width: boardElement.clientWidth - paddingX,
+        height: boardElement.clientHeight - paddingY,
         gap,
       });
     };

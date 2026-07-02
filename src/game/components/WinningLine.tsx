@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { WINNING_LINE_ANIMATION_DURATION } from "../constants/game";
 import type { Position } from "../models/Position";
 
 export type BoardMetrics = {
@@ -36,7 +37,7 @@ export function WinningLine({ positions, size, metrics }: WinningLineProps) {
         pathLength="1"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 0.42, ease: "easeOut" }}
+        transition={{ duration: WINNING_LINE_ANIMATION_DURATION / 1000, ease: "easeOut" }}
       />
     </motion.svg>
   );

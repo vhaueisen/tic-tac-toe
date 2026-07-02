@@ -5,6 +5,7 @@ export const BOARD_SIZE = 3;
 export const WIN_LENGTH = 3;
 export const AI_THINK_TIME = 520;
 export const ANIMATION_DURATION = 240;
+export const WINNING_LINE_ANIMATION_DURATION = 420;
 export const CELL_SIZE = 92;
 
 export const BOARD_PRESETS: BoardConfig[] = [

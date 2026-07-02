@@ -1,29 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Board } from "../game/components/Board";
-import { BoardPresetSelector } from "../game/components/BoardPresetSelector";
-import { BotDifficultySelector } from "../game/components/BotDifficultySelector";
 import { GameHUD } from "../game/components/GameHUD";
-import { GitHubRepoButton } from "../game/components/GitHubRepoButton";
 import { InstructionsModal } from "../game/components/InstructionsModal";
 import { ResetButton } from "../game/components/ResetButton";
-import { BOARD_PRESETS, CELL_SIZE } from "../game/constants/game";
+import { SettingsButton } from "../game/components/SettingsButton";
+import { SettingsModal } from "../game/components/SettingsModal";
+import { ThemeToggle } from "../game/components/ThemeToggle";
+import {
+  BOARD_PRESETS,
+  CELL_SIZE,
+  WINNING_LINE_ANIMATION_DURATION,
+} from "../game/constants/game";
 import { WinnerModal } from "../game/components/WinnerModal";
 import { useGame } from "../game/hooks/useGame";
 import type { CSSProperties } from "react";
 
 export default function App() {
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const game = useGame();
+  const [visibleResult, setVisibleResult] = useState(game.result);
   const winningPositions = game.result?.winningPositions ?? [];
   const boardLayoutWidth =
-    game.config.size * CELL_SIZE + (game.config.size - 1) * 12;
+    game.config.size * CELL_SIZE + (game.config.size - 1) * 12 + 24;
   const layoutStyle = {
     "--board-layout-width": `${boardLayoutWidth}px`,
   } as CSSProperties;
 
+  useEffect(() => {
+    if (game.result === null) {
+      setVisibleResult(null);
+      return;
+    }
+
+    const shouldWaitForLine =
+      game.result.kind === "win" && game.result.winningPositions.length >= 2;
+
+    if (!shouldWaitForLine) {
+      setVisibleResult(game.result);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setVisibleResult(game.result);
+    }, WINNING_LINE_ANIMATION_DURATION);
+
+    return () => window.clearTimeout(timeout);
+  }, [game.result]);
+
   return (
     <main className="app-shell">
+      <div className="top-right-controls">
+        <ThemeToggle />
+        <SettingsButton onOpen={() => setIsSettingsOpen(true)} />
+      </div>
       <motion.section
         className="game-surface"
         style={layoutStyle}
@@ -37,30 +68,7 @@ export default function App() {
           isThinking={game.phase === "ComputerThinking"}
         />
 
-        <div className="toolbar">
-          <div className="toolbar-controls">
-            <BoardPresetSelector
-              presets={BOARD_PRESETS}
-              selectedConfig={game.config}
-              onSelect={game.changeBoardConfig}
-            />
-            <BotDifficultySelector
-              selectedDifficulty={game.difficulty}
-              onSelect={game.changeDifficulty}
-            />
-          </div>
-          <div className="toolbar-actions">
-            <button
-              type="button"
-              className="secondary-action-button"
-              onClick={() => setIsInstructionsOpen(true)}
-            >
-              Instructions
-            </button>
-            <GitHubRepoButton href="https://github.com/vhaueisen/tic-tac-toe" />
-            <ResetButton onReset={game.resetGame} />
-          </div>
-        </div>
+        <ResetButton onReset={game.resetGame} />
 
         <Board
           board={game.board}
@@ -71,7 +79,20 @@ export default function App() {
           onPlay={game.playMove}
         />
       </motion.section>
-      <WinnerModal result={game.result} onReset={game.resetGame} />
+      <WinnerModal result={visibleResult} onReset={game.resetGame} />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        selectedConfig={game.config}
+        selectedDifficulty={game.difficulty}
+        presets={BOARD_PRESETS}
+        onSelectConfig={game.changeBoardConfig}
+        onSelectDifficulty={game.changeDifficulty}
+        onOpenInstructions={() => {
+          setIsSettingsOpen(false);
+          setIsInstructionsOpen(true);
+        }}
+        onClose={() => setIsSettingsOpen(false)}
+      />
       <InstructionsModal
         isOpen={isInstructionsOpen}
         onClose={() => setIsInstructionsOpen(false)}
