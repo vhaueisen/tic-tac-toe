@@ -68,7 +68,30 @@ export default function App() {
           isThinking={game.phase === "ComputerThinking"}
         />
 
-        <ResetButton onReset={game.resetGame} />
+        <motion.div
+          className="game-hint"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: "easeOut" }}
+        >
+          <motion.p
+            className="game-hint__text"
+            animate={{ opacity: game.isBoardEmpty ? 1 : 0, y: game.isBoardEmpty ? 0 : -4 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            aria-hidden={!game.isBoardEmpty}
+          >
+            Click a cell to start playing!
+          </motion.p>
+
+          <motion.div
+            className="game-hint__action"
+            animate={{ opacity: game.isBoardEmpty ? 0 : 1, y: game.isBoardEmpty ? 4 : 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{ pointerEvents: game.isBoardEmpty ? "none" : "auto" }}
+          >
+            <ResetButton onReset={game.resetGame} disabled={game.isBoardEmpty} />
+          </motion.div>
+        </motion.div>
 
         <Board
           board={game.board}

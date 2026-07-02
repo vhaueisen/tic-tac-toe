@@ -202,11 +202,16 @@ export function useGame() {
     () => getStatusText(state.result, state.phase === "ComputerThinking"),
     [state.phase, state.result],
   );
+  const isBoardEmpty = useMemo(
+    () => state.board.every((cell) => cell === null),
+    [state.board],
+  );
 
   return {
     ...state,
     statusText,
     isInputDisabled: state.phase !== "PlayerTurn",
+    isBoardEmpty,
     playMove,
     resetGame,
     changeBoardConfig,
