@@ -581,6 +581,7 @@ h1 {
     display: grid;
     place-items: center;
     padding: 20px;
+    overflow-y: auto;
     background: var(--backdrop);
     backdrop-filter: blur(14px);
 }
@@ -588,7 +589,9 @@ h1 {
 .instructions-modal {
     width: min(100%, 440px);
     display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
     gap: 22px;
+    max-height: calc(100dvh - 40px);
     border: 1px solid var(--border-strong);
     border-radius: 16px;
     padding: 24px;
@@ -628,6 +631,9 @@ h1 {
 .instructions-modal__content {
     display: grid;
     gap: 16px;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .instructions-modal__content section {
@@ -855,6 +861,15 @@ h1 {
 }
 
 @media (max-width: 420px) {
+
+    .modal-backdrop {
+        padding: 12px;
+    }
+
+    .instructions-modal {
+        max-height: calc(100dvh - 24px);
+        padding: 18px;
+    }
 
     .settings-row,
     .actions-row {
