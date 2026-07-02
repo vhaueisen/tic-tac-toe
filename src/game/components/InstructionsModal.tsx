@@ -1,6 +1,6 @@
-import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BOARD_PRESETS } from "../constants/game";
+import { useModalEscapeClose } from "../hooks/useModalEscapeClose";
 
 type InstructionsModalProps = {
   isOpen: boolean;
@@ -8,20 +8,7 @@ type InstructionsModalProps = {
 };
 
 export function InstructionsModal({ isOpen, onClose }: InstructionsModalProps) {
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  useModalEscapeClose({ isOpen, onClose });
 
   return (
     <AnimatePresence>

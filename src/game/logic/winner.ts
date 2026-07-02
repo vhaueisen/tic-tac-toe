@@ -31,6 +31,10 @@ export function findWinner(board: Board, config: BoardConfig): WinnerResult {
       }
 
       for (const direction of DIRECTIONS) {
+        if (!canCollectLine(start, direction, config.winLength, config.size)) {
+          continue;
+        }
+
         const line = collectLine(start, direction, config.winLength);
 
         if (
@@ -45,6 +49,25 @@ export function findWinner(board: Board, config: BoardConfig): WinnerResult {
   }
 
   return { winner: null, winningPositions: [] };
+}
+
+function canCollectLine(
+  start: Position,
+  direction: Direction,
+  length: number,
+  size: number,
+): boolean {
+  const end = {
+    row: start.row + direction.row * (length - 1),
+    column: start.column + direction.column * (length - 1),
+  };
+
+  return (
+    end.row >= 0 &&
+    end.row < size &&
+    end.column >= 0 &&
+    end.column < size
+  );
 }
 
 function collectLine(

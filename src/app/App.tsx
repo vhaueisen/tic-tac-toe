@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Board } from "../game/components/Board";
 import { GameHUD } from "../game/components/GameHUD";
@@ -9,7 +9,7 @@ import { SettingsModal } from "../game/components/SettingsModal";
 import { ThemeToggle } from "../game/components/ThemeToggle";
 import {
   BOARD_PRESETS,
-  CELL_SIZE,
+  getBoardPixelWidth,
   WINNING_LINE_ANIMATION_DURATION,
 } from "../game/constants/game";
 import { WinnerModal } from "../game/components/WinnerModal";
@@ -20,33 +20,21 @@ export default function App() {
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const game = useGame();
-  const [visibleResult, setVisibleResult] = useState(game.result);
   const winningPositions = game.result?.winningPositions ?? [];
-  const boardLayoutWidth =
-    game.config.size * CELL_SIZE + (game.config.size - 1) * 12 + 24;
+  const boardLayoutWidth = getBoardPixelWidth(game.config.size);
   const layoutStyle = {
     "--board-layout-width": `${boardLayoutWidth}px`,
   } as CSSProperties;
 
-  useEffect(() => {
-    if (game.result === null) {
-      setVisibleResult(null);
-      return;
+  const winnerModalDelayMs = useMemo(() => {
+    if (
+      game.result?.kind === "win" &&
+      game.result.winningPositions.length >= 2
+    ) {
+      return WINNING_LINE_ANIMATION_DURATION;
     }
 
-    const shouldWaitForLine =
-      game.result.kind === "win" && game.result.winningPositions.length >= 2;
-
-    if (!shouldWaitForLine) {
-      setVisibleResult(game.result);
-      return;
-    }
-
-    const timeout = window.setTimeout(() => {
-      setVisibleResult(game.result);
-    }, WINNING_LINE_ANIMATION_DURATION);
-
-    return () => window.clearTimeout(timeout);
+    return 0;
   }, [game.result]);
 
   return (
@@ -102,7 +90,11 @@ export default function App() {
           onPlay={game.playMove}
         />
       </motion.section>
-      <WinnerModal result={visibleResult} onReset={game.resetGame} />
+      <WinnerModal
+        result={game.result}
+        onReset={game.resetGame}
+        enterDelayMs={winnerModalDelayMs}
+      />
       <SettingsModal
         isOpen={isSettingsOpen}
         selectedConfig={game.config}

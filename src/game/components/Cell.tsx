@@ -30,6 +30,8 @@ export function Cell({
     <motion.button
       type="button"
       className="cell"
+      data-row={position.row}
+      data-column={position.column}
       data-winning={isWinning}
       aria-label={label}
       disabled={isDisabled}

@@ -1,11 +1,12 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
-import { CELL_SIZE } from "../constants/game";
+import { getBoardLayout, getBoardPixelWidth } from "../constants/game";
 import { hasPosition } from "../logic/winner";
 import { Cell } from "./Cell";
-import { WinningLine, type BoardMetrics } from "./WinningLine";
+import { WinningLine } from "./WinningLine";
 import type { Board as BoardModel } from "../models/Board";
 import type { Position } from "../models/Position";
+import type { CSSProperties } from "react";
 
 type BoardProps = {
   board: BoardModel;
@@ -25,44 +26,14 @@ export function Board({
   onPlay,
 }: BoardProps) {
   const boardRef = useRef<HTMLDivElement>(null);
-  const [metrics, setMetrics] = useState<BoardMetrics | null>(null);
-  const boardWidth = size * CELL_SIZE + (size - 1) * 12 + 24;
-
-  useLayoutEffect(() => {
-    const boardElement = boardRef.current;
-
-    if (boardElement === null) {
-      return;
-    }
-
-    const updateMetrics = () => {
-      const styles = window.getComputedStyle(boardElement);
-      const gap = Number.parseFloat(styles.columnGap) || 0;
-      const paddingX =
-        (Number.parseFloat(styles.paddingLeft) || 0) +
-        (Number.parseFloat(styles.paddingRight) || 0);
-      const paddingY =
-        (Number.parseFloat(styles.paddingTop) || 0) +
-        (Number.parseFloat(styles.paddingBottom) || 0);
-
-      setMetrics({
-        width: boardElement.clientWidth - paddingX,
-        height: boardElement.clientHeight - paddingY,
-        gap,
-      });
-    };
-
-    updateMetrics();
-
-    if (!("ResizeObserver" in window)) {
-      return;
-    }
-
-    const observer = new ResizeObserver(updateMetrics);
-    observer.observe(boardElement);
-
-    return () => observer.disconnect();
-  }, [size]);
+  const boardLayout = getBoardLayout(size);
+  const boardWidth = getBoardPixelWidth(size);
+  const boardStyle = {
+    gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+    width: `min(100%, ${boardWidth}px)`,
+    "--board-gap": `${boardLayout.gap}px`,
+    "--board-padding": `${boardLayout.padding}px`,
+  } as CSSProperties;
 
   return (
     <motion.div
@@ -71,10 +42,7 @@ export function Board({
       className="board"
       role="grid"
       aria-label="Tic tac toe board"
-      style={{
-        gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
-        width: `min(100%, ${boardWidth}px)`,
-      }}
+      style={boardStyle}
       initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.32, ease: "easeOut" }}
@@ -97,7 +65,7 @@ export function Board({
           />
         );
       })}
-      <WinningLine positions={winningPositions} size={size} metrics={metrics} />
+      <WinningLine positions={winningPositions} />
     </motion.div>
   );
 }

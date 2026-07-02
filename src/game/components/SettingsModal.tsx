@@ -1,9 +1,9 @@
-import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleHelp } from "lucide-react";
 import { BoardPresetSelector } from "./BoardPresetSelector";
 import { BotDifficultySelector } from "./BotDifficultySelector";
 import { GitHubRepoButton } from "./GitHubRepoButton";
+import { useModalEscapeClose } from "../hooks/useModalEscapeClose";
 import type { BoardConfig } from "../models/Board";
 import type { BotDifficulty } from "../models/BotDifficulty";
 
@@ -28,20 +28,7 @@ export function SettingsModal({
   onOpenInstructions,
   onClose,
 }: SettingsModalProps) {
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  useModalEscapeClose({ isOpen, onClose });
 
   return (
     <AnimatePresence>

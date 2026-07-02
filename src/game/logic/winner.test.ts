@@ -3,6 +3,15 @@ import { createBoard, placeMove } from "./board";
 import { findWinner } from "./winner";
 
 describe("findWinner", () => {
+  it("returns no winner for an empty board", () => {
+    const config = { size: 3, winLength: 3 };
+
+    expect(findWinner(createBoard(config.size), config)).toEqual({
+      winner: null,
+      winningPositions: [],
+    });
+  });
+
   it("detects a 3x3 horizontal winner", () => {
     const config = { size: 3, winLength: 3 };
     let board = createBoard(config.size);

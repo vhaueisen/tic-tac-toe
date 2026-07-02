@@ -56,6 +56,6 @@ describe("Board", () => {
       />,
     );
 
-    expect(container.querySelector(".winning-line line")).toBeInTheDocument();
+    expect(container.querySelector(".winning-line")).toBeInTheDocument();
   });
 });

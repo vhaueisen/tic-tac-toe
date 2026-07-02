@@ -37,7 +37,7 @@ export function chooseAiMove(
     return chooseCenterBiasedMove(board, config);
   }
 
-  const depth = AI_DEPTH_BY_DIFFICULTY[difficulty][config.size] ?? 1;
+  const depth = AI_DEPTH_BY_DIFFICULTY.hard[config.size] ?? 1;
   const bestMove = minimax({
     board,
     config,

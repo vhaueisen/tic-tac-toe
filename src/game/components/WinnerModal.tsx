@@ -6,10 +6,16 @@ import type { GameResult } from "../models/GameState";
 type WinnerModalProps = {
   result: GameResult | null;
   onReset: () => void;
+  enterDelayMs?: number;
 };
 
-export function WinnerModal({ result, onReset }: WinnerModalProps) {
+export function WinnerModal({
+  result,
+  onReset,
+  enterDelayMs = 0,
+}: WinnerModalProps) {
   const message = getResultMessage(result);
+  const enterDelaySeconds = enterDelayMs / 1000;
 
   return (
     <AnimatePresence>
@@ -20,7 +26,7 @@ export function WinnerModal({ result, onReset }: WinnerModalProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          transition={{ duration: 0.18, ease: "easeOut", delay: enterDelaySeconds }}
         >
           <motion.section
             className="winner-modal"
@@ -32,7 +38,7 @@ export function WinnerModal({ result, onReset }: WinnerModalProps) {
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ duration: 0.26, ease: "easeOut" }}
+            transition={{ duration: 0.26, ease: "easeOut", delay: enterDelaySeconds }}
           >
             <p className="winner-modal__eyebrow">Game finished</p>
             <h2 id="winner-modal-title">{message}</h2>
