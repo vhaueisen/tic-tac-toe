@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useReducer } from "react";
 import {
   AI_THINK_TIME,
   ANIMATION_DURATION,
+  DEFAULT_BOT_DIFFICULTY,
   DEFAULT_BOARD_CONFIG,
 } from "../constants/game";
 import { chooseAiMove } from "../logic/ai";
@@ -9,12 +10,14 @@ import { createBoard, placeMove } from "../logic/board";
 import { getGameResult, getStatusText } from "../logic/turns";
 import { COMPUTER_PLAYER, HUMAN_PLAYER } from "../models/Player";
 import type { BoardConfig } from "../models/Board";
+import type { BotDifficulty } from "../models/BotDifficulty";
 import type { GamePhase, GameState } from "../models/GameState";
 import type { Position } from "../models/Position";
 
 type Action =
   | { type: "start"; config?: BoardConfig }
   | { type: "changeConfig"; config: BoardConfig }
+  | { type: "changeDifficulty"; difficulty: BotDifficulty }
   | { type: "playerMove"; position: Position }
   | { type: "animationDone" }
   | { type: "computerMove"; position: Position | null }
@@ -23,6 +26,7 @@ type Action =
 const initialState: GameState = {
   board: createBoard(DEFAULT_BOARD_CONFIG.size),
   config: DEFAULT_BOARD_CONFIG,
+  difficulty: DEFAULT_BOT_DIFFICULTY,
   phase: "Idle",
   result: null,
   pendingPhase: null,
@@ -36,6 +40,7 @@ function reducer(state: GameState, action: Action): GameState {
       return {
         board: createBoard(config.size),
         config,
+        difficulty: state.difficulty,
         phase: "PlayerTurn",
         result: null,
         pendingPhase: null,
@@ -47,10 +52,17 @@ function reducer(state: GameState, action: Action): GameState {
       return {
         board: createBoard(action.config.size),
         config: action.config,
+        difficulty: state.difficulty,
         phase: "PlayerTurn",
         result: null,
         pendingPhase: null,
         resetVersion: state.resetVersion + 1,
+      };
+
+    case "changeDifficulty":
+      return {
+        ...state,
+        difficulty: action.difficulty,
       };
 
     case "playerMove": {
@@ -97,6 +109,7 @@ function reducer(state: GameState, action: Action): GameState {
       return {
         ...initialState,
         config: state.config,
+        difficulty: state.difficulty,
         board: createBoard(state.config.size),
         phase: "PlayerTurn",
         resetVersion: state.resetVersion + 1,
@@ -161,12 +174,13 @@ export function useGame() {
           state.config,
           COMPUTER_PLAYER,
           HUMAN_PLAYER,
+          state.difficulty,
         ),
       });
     }, AI_THINK_TIME);
 
     return () => window.clearTimeout(timeout);
-  }, [state.board, state.config, state.phase]);
+  }, [state.board, state.config, state.difficulty, state.phase]);
 
   const playMove = useCallback((position: Position) => {
     dispatch({ type: "playerMove", position });
@@ -178,6 +192,10 @@ export function useGame() {
 
   const changeBoardConfig = useCallback((config: BoardConfig) => {
     dispatch({ type: "changeConfig", config });
+  }, []);
+
+  const changeDifficulty = useCallback((difficulty: BotDifficulty) => {
+    dispatch({ type: "changeDifficulty", difficulty });
   }, []);
 
   const statusText = useMemo(
@@ -192,5 +210,6 @@ export function useGame() {
     playMove,
     resetGame,
     changeBoardConfig,
+    changeDifficulty,
   };
 }

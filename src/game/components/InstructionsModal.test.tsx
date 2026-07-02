@@ -11,6 +11,9 @@ describe("InstructionsModal", () => {
       screen.getByRole("dialog", { name: "Instructions" }),
     ).toBeInTheDocument();
     expect(screen.getByText(/you move first/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/medium blocks immediate threats/i),
+    ).toBeInTheDocument();
   });
 
   it("shows the win condition for each board preset", () => {

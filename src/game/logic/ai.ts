@@ -1,8 +1,12 @@
-import { AI_DEPTH_BY_SIZE } from "../constants/game";
+import {
+  AI_DEPTH_BY_DIFFICULTY,
+  DEFAULT_BOT_DIFFICULTY,
+} from "../constants/game";
 import { getAvailableMoves, placeMove } from "./board";
 import { minimax } from "./minimax";
 import { getGameResult } from "./turns";
 import type { Board, BoardConfig } from "../models/Board";
+import type { BotDifficulty } from "../models/BotDifficulty";
 import type { Player } from "../models/Player";
 import type { Position } from "../models/Position";
 
@@ -11,11 +15,16 @@ export function chooseAiMove(
   config: BoardConfig,
   computer: Player,
   human: Player,
+  difficulty: BotDifficulty = DEFAULT_BOT_DIFFICULTY,
 ): Position | null {
   const immediateWin = findImmediateMove(board, config, computer);
 
   if (immediateWin !== null) {
     return immediateWin;
+  }
+
+  if (difficulty === "easy") {
+    return chooseCenterBiasedMove(board, config);
   }
 
   const block = findImmediateMove(board, config, human);
@@ -24,7 +33,7 @@ export function chooseAiMove(
     return block;
   }
 
-  const depth = AI_DEPTH_BY_SIZE[config.size] ?? 3;
+  const depth = AI_DEPTH_BY_DIFFICULTY[difficulty][config.size] ?? 1;
   const bestMove = minimax({
     board,
     config,
@@ -34,6 +43,24 @@ export function chooseAiMove(
   });
 
   return bestMove.position ?? getAvailableMoves(board, config.size)[0] ?? null;
+}
+
+function chooseCenterBiasedMove(
+  board: Board,
+  config: BoardConfig,
+): Position | null {
+  const availableMoves = getAvailableMoves(board, config.size);
+  const center = (config.size - 1) / 2;
+
+  return (
+    [...availableMoves].sort((first, second) => {
+      const firstDistance =
+        Math.abs(first.row - center) + Math.abs(first.column - center);
+      const secondDistance =
+        Math.abs(second.row - center) + Math.abs(second.column - center);
+      return firstDistance - secondDistance;
+    })[0] ?? null
+  );
 }
 
 function findImmediateMove(

@@ -1,4 +1,5 @@
 import type { BoardConfig } from "../models/Board";
+import type { BotDifficulty } from "../models/BotDifficulty";
 
 export const BOARD_SIZE = 3;
 export const WIN_LENGTH = 3;
@@ -13,9 +14,20 @@ export const BOARD_PRESETS: BoardConfig[] = [
 ];
 
 export const DEFAULT_BOARD_CONFIG = BOARD_PRESETS[0];
+export const DEFAULT_BOT_DIFFICULTY: BotDifficulty = "hard";
 
-export const AI_DEPTH_BY_SIZE: Record<number, number> = {
-  3: 8,
-  5: 3,
-  7: 2,
+export const AI_DEPTH_BY_DIFFICULTY: Record<
+  Exclude<BotDifficulty, "easy">,
+  Record<number, number>
+> = {
+  medium: {
+    3: 2,
+    5: 1,
+    7: 1,
+  },
+  hard: {
+    3: 8,
+    5: 3,
+    7: 2,
+  },
 };

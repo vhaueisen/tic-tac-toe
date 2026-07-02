@@ -79,6 +79,15 @@ export function InstructionsModal({ isOpen, onClose }: InstructionsModalProps) {
               </section>
 
               <section>
+                <h3>Bot difficulty</h3>
+                <p>
+                  Easy plays center-first and misses some blocks. Medium blocks
+                  immediate threats. Hard uses the deepest search for the
+                  selected board.
+                </p>
+              </section>
+
+              <section>
                 <h3>Boards</h3>
                 <p>
                   Use 3x3 for classic play, or switch to larger boards for a

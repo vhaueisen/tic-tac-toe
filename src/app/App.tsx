@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Board } from "../game/components/Board";
 import { BoardPresetSelector } from "../game/components/BoardPresetSelector";
+import { BotDifficultySelector } from "../game/components/BotDifficultySelector";
 import { GameHUD } from "../game/components/GameHUD";
 import { GitHubRepoButton } from "../game/components/GitHubRepoButton";
 import { InstructionsModal } from "../game/components/InstructionsModal";
@@ -37,11 +38,17 @@ export default function App() {
         />
 
         <div className="toolbar">
-          <BoardPresetSelector
-            presets={BOARD_PRESETS}
-            selectedConfig={game.config}
-            onSelect={game.changeBoardConfig}
-          />
+          <div className="toolbar-controls">
+            <BoardPresetSelector
+              presets={BOARD_PRESETS}
+              selectedConfig={game.config}
+              onSelect={game.changeBoardConfig}
+            />
+            <BotDifficultySelector
+              selectedDifficulty={game.difficulty}
+              onSelect={game.changeDifficulty}
+            />
+          </div>
           <div className="toolbar-actions">
             <button
               type="button"
